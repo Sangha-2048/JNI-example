@@ -1,0 +1,97 @@
+https://schlining.medium.com/a-simple-java-native-interface-jni-example-in-java-and-scala-68fdafe76f5f
+https://nljug.org/gettingstarted/does-java-18-finally-have-a-better-alternative-to-jni/
+
+0. Copy files Sample1.scala
+
+1. scalac Sample1.scala
+
+2. javah -cp /usr/share/scala-2.11/lib/scala-library.jar:. Sample1
+
+test@L1237:~/project/c-files/JNI$ scalac Sample1.scala
+test@L1237:~/project/c-files/JNI$ ls
+'Sample1$.class'   Sample1.class   Sample1.cpp   Sample1.scala
+test@L1237:~/project/c-files/JNI$ javah -cp /usr/share/scala-2.11/lib/scala-library.jar:. Sample1
+test@L1237:~/project/c-files/JNI$ ls
+'Sample1$.class'   Sample1.class   Sample1.cpp   Sample1.h   Sample1.scala
+test@L1237:~/project/c-files/JNI$ 
+
+3. gcc -I/usr/lib/jvm/java-8-openjdk-amd64/include/ -I/usr/lib/jvm/java-8-openjdk-amd64/include/linux -fPIC -c -o Sample1.o Sample1.cpp
+
+4. gcc -shared -o libSample1.so Sample1.o
+
+5. scala -cp . -Djava.library.path=$(pwd) Sample1
+
+# Compiling scala code by manually passing jar
+---------------------------------------------------------------------
+scalac -cp /home/test/Scala/spark/jars/* tmp.scala
+
+error: IO error while decoding /home/test/Scala/spark/jars/activation-1.1.1.jar with UTF-8
+Please try specifying another one using the -encoding option
+----------------------------------------------------------------------
+scalac -cp spark-sql_2.12-3.1.2.jar tmp.scala 
+
+tmp.scala:15: error: Symbol 'type <none>.internal.Logging' is missing from the classpath.
+This symbol is required by 'class org.apache.spark.sql.SparkSession'.
+Make sure that type Logging is in your classpath and check for conflicting dependencies with `-Ylog-classpath`.
+A full rebuild may help if 'SparkSession.class' was compiled against an incompatible version of <none>.internal.
+  val sparkSession:SparkSession = SparkSession.builder().master("local[2]").appName("SparkTestSuite1").getOrCreate()
+
+----------------------------------------------------------------------
+
+scalac -cp jar_files/spark-sql_2.13-3.3.1.jar tmp.scala 
+
+error: error while loading package, Scala signature package has wrong version
+ expected: 5.0
+ found: 5.2 in package.class
+tmp.scala:2: error: object DataFrame is not a member of package org.apache.spark.sql
+import org.apache.spark.sql.{DataFrame, SparkSession}
+
+----------------------------------------------------------------------
+
+
+No error
+scalac -cp "/home/test/Scala/spark/jars/*:dependencies/*.jar" tmp.scala
+scalac -cp "/home/test/Scala/spark/jars/*:dependencies/*.jar" /home/test/project/JNI-example-main/tmp.scala
+
+-----------------------------------------------------------------------
+
+scala -cp . TmpClass
+java.lang.ClassNotFoundException: org.apache.spark.sql.SparkSession$
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:591)
+	at java.lang.ClassLoader.loadClassHelper(ClassLoader.java:951)
+
+-----------------------------------------------------------------------
+
+To run file
+scala -cp "/home/test/Scala/spark/jars/*:dependencies/*.jar:." TmpClass
+
+java.lang.NoSuchMethodError: scala/Product.$init$(Lscala/Product;)V (loaded from file:/usr/share/scala-2.11/lib/scala-library.jar by scala.reflect.internal.util.ScalaClassLoader$URLClassLoader@bd579ab) called from class org.apache.spark.SparkConf$DeprecatedConfig (loaded from file:/home/test/Scala/spark/jars/spark-core_2.12-3.1.2.jar by scala.reflect.internal.util.ScalaClassLoader$URLClassLoader@bd579ab).
+	at org.apache.spark.SparkConf$DeprecatedConfig.<init>(SparkConf.scala:799)
+
+------------------------------------------------------------------------
+
+# Compiling and running scala class using scala-2.12.x
+# Running from ./project/JNI-sxample-main
+
+scala-2.12.2/bin/scalac -cp "/home/test/Scala/spark/jars/*:dependencies/*.jar:." TmpClass.scala
+
+scala-2.12.2/bin/scala -cp "/home/test/Scala/spark/jars/*:dependencies/*.jar:." -J-Xmx4g TmpClass
+
+------------------------------------------------------------------------
+
+# Combining both set of commands
+
+1.
+scala-2.12.2/bin/scalac -cp "/home/test/Scala/spark/jars/*:dependencies/*.jar:." TmpClass.scala
+
+2. 
+javah -cp /usr/share/scala-2.11/lib/scala-library.jar:. TmpClass
+
+3.
+gcc -I/usr/lib/jvm/java-8-openjdk-amd64/include/ -I/usr/lib/jvm/java-8-openjdk-amd64/include/linux -fPIC -c -o TmpClass.o TmpClass.cpp
+
+4.
+gcc -shared -o libTmpClass.so TmpClass.o
+
+5.
+scala-2.12.2/bin/scala -cp "/home/test/Scala/spark/jars/*:dependencies/*.jar:." -J-Xmx4g -Djava.library.path=$(pwd)  TmpClass
