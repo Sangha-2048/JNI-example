@@ -95,3 +95,13 @@ gcc -shared -o libTmpClass.so TmpClass.o
 
 5.
 scala-2.12.2/bin/scala -cp "/home/test/Scala/spark/jars/*:dependencies/*.jar:." -J-Xmx4g -Djava.library.path=$(pwd)  TmpClass
+
+TO-DO
+++++++++++
+1. Try on cluster
+	1,00,000 data X 10
+2. Difference b/w sum and JNI_sum execution time
+
+3. Implement Complex object in JNI
+
+
