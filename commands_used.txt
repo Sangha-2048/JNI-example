@@ -104,4 +104,10 @@ TO-DO
 
 3. Implement Complex object in JNI
 
+Running command on cluster (VA1-POND)
 
+0. Copied all the files and jars on the cluster
+
+1. /tmp/scala-2.12.2/bin/scalac -cp "/tmp/jars/*:dependencies/*.jar:." TmpClass.scala
+
+2. /tmp/scala-2.12.2/bin/scala -cp "/tmp/jars/*:dependencies/*.jar:." -J-Xmx4g -Djava.library.path=$(pwd)  TmpClass
