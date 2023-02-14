@@ -99,7 +99,7 @@ scala-2.12.2/bin/scala -cp "/home/test/Scala/spark/jars/*:dependencies/*.jar:." 
 TO-DO
 ++++++++++
 1. Try on cluster
-	1,00,000 data X 10
+	1,000,000 data X 10
 2. Difference b/w sum and JNI_sum execution time
 
 3. Implement Complex object in JNI
@@ -111,3 +111,7 @@ Running command on cluster (VA1-POND)
 1. /tmp/scala-2.12.2/bin/scalac -cp "/tmp/jars/*:dependencies/*.jar:." TmpClass.scala
 
 2. /tmp/scala-2.12.2/bin/scala -cp "/tmp/jars/*:dependencies/*.jar:." -J-Xmx4g -Djava.library.path=$(pwd)  TmpClass
+
+# Data generation script 
+
+python2 data-gen.py
