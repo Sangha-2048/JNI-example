@@ -42,8 +42,8 @@ object TmpClass {
       .load("data.csv")
 
     df.show()
-/*
-    val startTimeMillis = System.currentTimeMillis()
+
+    val startTimeMillisFirst = System.currentTimeMillis()
 
     val df2 = df.rdd.mapPartitions( partition => {
 
@@ -69,23 +69,23 @@ object TmpClass {
       val newDf = df2.toDF("Num1","Num2","Result")
       newDf.show()
 
-      val endTimeMillis = System.currentTimeMillis()
+      val endTimeMillisFirst = System.currentTimeMillis()
 
-      val durationSeconds = (endTimeMillis - startTimeMillis) / 1000
-      println("\nNative Approach Duration = " + durationSeconds + " seconds\n")
-*/
+      val durationSecondsI = (endTimeMillisFirst - startTimeMillisFirst) / 1000
+      println("\nNative Approach Duration = " + durationSecondsI + " seconds\n")
+
       // Spark-scala Approach
 
-      val startTimeMillis = System.currentTimeMillis()
+      val startTimeMillisSecond = System.currentTimeMillis()
 
       val DF2 = df.withColumn("sum", col("Num1")+col("Num2"))
 
       DF2.show()
 
-      val endTimeMillis = System.currentTimeMillis()
+      val endTimeMillisSecond = System.currentTimeMillis()
 
-      val durationSeconds = (endTimeMillis - startTimeMillis) / 1000
-      println("\n Spark scala Approach Duration = " + durationSeconds + " seconds\n")
+      val durationSecondsII = (endTimeMillisSecond - startTimeMillisSecond) / 1000
+      println("\n Spark scala Approach Duration = " + durationSecondsII + " seconds\n")
 
   }
 
